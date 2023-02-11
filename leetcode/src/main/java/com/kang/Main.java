@@ -7,5 +7,8 @@ public class Main {
 
 
         System.out.println(7/2);
+
+        String str  = "asdfg";
+        System.out.println(str.charAt(2) - 'a');
     }
 }

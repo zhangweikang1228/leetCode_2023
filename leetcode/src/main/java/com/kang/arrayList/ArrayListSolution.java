@@ -87,14 +87,12 @@ public class ArrayListSolution {
             if (val == nums[i]) {
                 temp++;
             } else {
-                nums[i-temp] = nums[i];
+                nums[i - temp] = nums[i];
             }
         }
         for (int j = 0; j < nums.length; j++) {
             System.out.println(nums[j]);
         }
-
-
 
 
         return temp;
@@ -104,6 +102,7 @@ public class ArrayListSolution {
      * 977. Squares of a Sorted Array
      * Given an integer array nums sorted in non-decreasing order,
      * return an array of the squares of each number sorted in non-decreasing order.
+     *
      * @param nums
      * @return
      */
@@ -122,14 +121,83 @@ public class ArrayListSolution {
         int r = nums.length - 1;
         int[] res = new int[nums.length];
         int j = nums.length - 1;
-        while(l <= r){
-            if(nums[l] * nums[l] > nums[r] * nums[r]){
+        while (l <= r) {
+            if (nums[l] * nums[l] > nums[r] * nums[r]) {
                 res[j--] = nums[l] * nums[l++];
-            }else{
+            } else {
                 res[j--] = nums[r] * nums[r--];
             }
         }
         return res;
     }
 
+    /**
+     * 209. Minimum Size Subarray Sum
+     * Given an array of positive integers nums and a positive integer target, return the minimal length of a
+     * subarray whose sum is greater than or equal to target. If there is no such subarray, return 0 instead.
+     *
+     * @param target
+     * @param nums
+     * @return
+     */
+    public int minSubArrayLen(int target, int[] nums) {
+        // 滑动窗口
+        int left = 0; // 滑动窗口起始位置
+        int sum = 0; // 滑动窗口数值之和
+        int result = Integer.MAX_VALUE; // 滑动窗口的长度
+        for (int right = 0; right < nums.length; right++) {
+            sum += nums[right];
+            while (sum >= target) {
+                result = Math.min(result, right - left + 1); // 从左到右压缩窗口 Compressing the window from left to right
+                sum -= nums[left++];
+            }
+        }
+        return result == Integer.MAX_VALUE ? 0 : result;
+
+    }
+
+    /**
+     * 59. Spiral Matrix II
+     * Given a positive integer n, generate an n x n matrix filled with elements from 1 to n2 in spiral order.
+     *
+     * @param n
+     * @return
+     */
+    public int[][] generateMatrix(int n) {
+
+        // 循环次数
+        int loop = 0;
+        // 返回矩阵
+        int[][] result = new int[n][n];
+        // 每次循环的点
+        int start = 0;
+        // 填充值
+        int count = 1;
+        int i, j;
+        while (loop++ < n / 2) { // 判断循环几圈，loop从1开始
+            // 上面：从左到右
+            for (j = start; j < n - loop; j++) { // 左闭右开，每循环一次，右边就少一个不用填
+                result[start][j] = count++;
+            }
+            // 右边：从上到下
+            for (i = start; i < n - loop; i++) {
+                result[i][j] = count++;
+            }
+            // 下面：从右到左
+            for (; j >= loop; j--) {
+                result[i][j] = count++;
+            }
+            // 左面：从下到上
+            for (; i >= loop; i--) {
+                result[i][j] = count++;
+            }
+            start++;
+        }
+        if (n % 2 == 1) {
+            result[start][start] = n * n;
+        }
+
+        return result;
+
+    }
 }
