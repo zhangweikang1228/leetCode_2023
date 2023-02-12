@@ -60,4 +60,92 @@ public class LinkListSolution {
         return result.next;
     }
 
+
+    /**
+     * 203. Remove Linked List Elements
+     * Given the head of a linked list and an integer val, remove all the nodes of the linked list that has Node.val == val,
+     * and return the new head.
+     * @param head
+     * @param val
+     * @return
+     */
+    public static ListNode removeElements(ListNode head, int val) {
+        ListNode fakeHead = new ListNode(-1);
+        fakeHead.next = head;
+        ListNode curr = head, prev = fakeHead;
+        while (curr != null) {
+            if (curr.val == val) {
+                prev.next = curr.next;
+            } else {
+                prev = prev.next;
+            }
+            curr = curr.next;
+        }
+        return fakeHead.next;
+    }
+
+    public static ListNode removeElements2(ListNode head, int val){
+        while (head != null && head.val == val) {
+            head = head.next;
+        }
+        // 已经为null，提前退出
+        if (head == null) {
+            return head;
+        }
+        // 已确定当前head.val != val
+        ListNode pre = head;
+        ListNode cur = head.next;
+        while (cur != null) {
+            if (cur.val == val) {
+                pre.next = cur.next;
+            } else {
+                pre = cur;
+            }
+            cur = cur.next;
+        }
+        return head;
+    }
+
+
+    /**
+     * 206. Reverse Linked List
+     * Given the head of a singly linked list, reverse the list, and return the reversed list.
+     * @param head
+     * @return
+     */
+    public static ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode cur = head;
+        ListNode temp = null;
+        while (cur != null) {
+            temp = cur.next;// 保存下一个节点
+            cur.next = prev;
+            prev = cur;
+            cur = temp;
+        }
+        return prev;
+    }
+
+    /**
+     * 递归来写206.反转链表
+     * @param head
+     * @return
+     */
+    public ListNode reverseList2(ListNode head) {
+        return reverse(null, head);
+    }
+
+    private ListNode reverse(ListNode prev, ListNode cur) {
+        if (cur == null) {
+            return prev;
+        }
+        ListNode temp = null;
+        temp = cur.next;// 先保存下一个节点
+        cur.next = prev;// 反转
+        // 更新prev、cur位置
+        // prev = cur;
+        // cur = temp;
+        return reverse(cur, temp);
+    }
+
 }
