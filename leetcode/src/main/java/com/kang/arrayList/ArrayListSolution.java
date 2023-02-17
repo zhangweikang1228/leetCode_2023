@@ -80,22 +80,38 @@ public class ArrayListSolution {
      */
     // 可以用快慢指针，或者 双向指针
     public static int removeElement(int[] nums, int val) {
-
-        int temp = 0;
-
-        for (int i = 0; i < nums.length; i++) {
-            if (val == nums[i]) {
-                temp++;
-            } else {
-                nums[i - temp] = nums[i];
+        // 快慢指针
+        int slowIndex = 0;
+        for (int fastIndex = 0; fastIndex < nums.length; fastIndex++) {
+            if (nums[fastIndex] != val) {
+                nums[slowIndex] = nums[fastIndex];
+                slowIndex++;
             }
         }
-        for (int j = 0; j < nums.length; j++) {
-            System.out.println(nums[j]);
+        return slowIndex;
+    }
+
+    /**
+     * 双指针：  快指针-指向新数所需要的第一个元素   慢指针-需要更新数组的位置
+     * @param nums
+     * @param val
+     * @return
+     */
+    public static int removeElement2(int[] nums, int val) {
+        // 双向指针
+        int left = 0;
+        int right = nums.length - 1;
+        while(right >= 0 && nums[right] == val) right--; //将right移到从右数第一个值不为val的位置
+        while(left <= right) {
+            if(nums[left] == val) { //left位置的元素需要移除
+                //将right位置的元素移到left（覆盖），right位置移除
+                nums[left] = nums[right];
+                right--;
+            }
+            left++;
+            while(right >= 0 && nums[right] == val) right--;
         }
-
-
-        return temp;
+        return left;
     }
 
     /**
