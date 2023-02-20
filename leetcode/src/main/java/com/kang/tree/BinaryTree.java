@@ -71,6 +71,7 @@ public class BinaryTree {
 
     /**
      * 后序遍历顺序 左-右-中 入栈顺序：中-左-右 出栈顺序：中-右-左， 最后翻转结果
+     *
      * @param root
      * @return
      */
@@ -121,6 +122,7 @@ public class BinaryTree {
 
     /**
      * 中序遍历顺序: 左-中-右 入栈顺序： 左-右
+     *
      * @param root
      * @return
      */
@@ -131,8 +133,8 @@ public class BinaryTree {
         }
         Stack<TreeNode> stack = new Stack<>();
         TreeNode current = root;
-        while (current != null || !stack.isEmpty()){
-            if (current!=null){
+        while (current != null || !stack.isEmpty()) {
+            if (current != null) {
                 stack.push(current);
                 current = current.left;
             } else {
@@ -148,13 +150,14 @@ public class BinaryTree {
 
     /**
      * 102. Binary Tree Level Order Traversal
+     *
      * @param root
      * @return
      */
     public List<List<Integer>> levelOrder(TreeNode root) {
         List<List<Integer>> resList = new ArrayList<List<Integer>>();
-        checkFun01(root,0,resList);
-        checkFun02(root,resList);
+        checkFun01(root, 0, resList);
+        checkFun02(root, resList);
         return resList;
     }
 
@@ -200,6 +203,7 @@ public class BinaryTree {
 
     /**
      * 226. Invert Binary Tree
+     *
      * @param root
      * @return
      */
@@ -227,11 +231,14 @@ public class BinaryTree {
 
     /**
      * 非递归
+     *
      * @param root
      * @return
      */
     public TreeNode invertTreeBFS(TreeNode root) {
-        if (root == null) {return null;}
+        if (root == null) {
+            return null;
+        }
         ArrayDeque<TreeNode> deque = new ArrayDeque<>();
         deque.offer(root);
         while (!deque.isEmpty()) {
@@ -247,6 +254,73 @@ public class BinaryTree {
     }
 
 
+    /**
+     * 101. Symmetric Tree
+     * Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+     *
+     * @param root
+     * @return
+     */
+    public boolean isSymmetric(TreeNode root) {
+        boolean res = false;
+
+        res = compareTwoNodes(root.left, root.right);
+
+        return res;
+    }
+
+    private boolean compareTwoNodes(TreeNode left, TreeNode right) {
+
+        if (left != null && right == null) {
+            return false;
+        } else if (left == null && right != null) {
+            return false;
+        } else if (left == null && right == null) {
+            return true;
+        } else if (left.val != right.val) {
+            return false;
+        }
+        // 比较内侧节点
+        boolean inside = compareTwoNodes(left.right,right.left);
+        // 比较外侧节点
+        boolean outside = compareTwoNodes(left.left,right.right);
+
+        return inside && outside;
+    }
+
+    /**
+     * 104. Maximum Depth of Binary Tree
+     * @param root
+     * @return
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int leftDepth = maxDepth(root.left);
+        int rightDepth = maxDepth(root.right);
+        return Math.max(leftDepth, rightDepth) + 1;
+    }
+    /**
+     * 111. Minimum Depth of Binary Tree
+     * 递归法，相比求MaxDepth要复杂点
+     * 因为最小深度是从根节点到最近**叶子节点**的最短路径上的节点数量
+     */
+    public int minDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int leftDepth = minDepth(root.left);
+        int rightDepth = minDepth(root.right);
+        if (root.left == null) {
+            return rightDepth + 1;
+        }
+        if (root.right == null) {
+            return leftDepth + 1;
+        }
+        // 左右结点都不为null
+        return Math.min(leftDepth, rightDepth) + 1;
+    }
 
 
 }
