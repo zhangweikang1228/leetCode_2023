@@ -475,4 +475,28 @@ public class BinaryTree {
     }
 
 
+    /**
+     * 100. Same Tree
+     * @param p
+     * @param q
+     * @return
+     */
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        return isSameTreeCompare(p, q);
+    }
+    private boolean isSameTreeCompare(TreeNode tree1, TreeNode tree2) {
+
+        if(tree1==null && tree2==null)return true;
+        if(tree1==null || tree2==null)return false;
+        if(tree1.val!=tree2.val)return false;
+        // 此时就是：左右节点都不为空，且数值相同的情况
+        // 此时才做递归，做下一层的判断
+        boolean compareLeft = isSameTreeCompare(tree1.left, tree2.left);       // 左子树：左、 右子树：左
+        boolean compareRight = isSameTreeCompare(tree1.right, tree2.right);    // 左子树：右、 右子树：右
+        boolean isSame = compareLeft && compareRight;                  // 左子树：中、 右子树：中（逻辑处理）
+        return isSame;
+
+    }
+
+
 }
