@@ -422,10 +422,10 @@ public class BinaryTree {
         if (root.left == null && root.right == null) { //找到了叶子节点
             // 输出
             StringBuilder sb = new StringBuilder(); // StringBuilder更快
-            for (int i = 0; i < paths.size()-1; i++) {
+            for (int i = 0; i < paths.size() - 1; i++) {
                 sb.append(paths.get(i)).append("->");
             }
-            sb.append(paths.get(paths.size()- 1) );//记录最后一个节点
+            sb.append(paths.get(paths.size() - 1));//记录最后一个节点
             res.add(sb.toString());
             return;
         }
@@ -441,6 +441,7 @@ public class BinaryTree {
 
 
     }
+
     /**
      * 迭代法
      */
@@ -477,6 +478,7 @@ public class BinaryTree {
 
     /**
      * 100. Same Tree
+     *
      * @param p
      * @param q
      * @return
@@ -484,11 +486,12 @@ public class BinaryTree {
     public boolean isSameTree(TreeNode p, TreeNode q) {
         return isSameTreeCompare(p, q);
     }
+
     private boolean isSameTreeCompare(TreeNode tree1, TreeNode tree2) {
 
-        if(tree1==null && tree2==null)return true;
-        if(tree1==null || tree2==null)return false;
-        if(tree1.val!=tree2.val)return false;
+        if (tree1 == null && tree2 == null) return true;
+        if (tree1 == null || tree2 == null) return false;
+        if (tree1.val != tree2.val) return false;
         // 此时就是：左右节点都不为空，且数值相同的情况
         // 此时才做递归，做下一层的判断
         boolean compareLeft = isSameTreeCompare(tree1.left, tree2.left);       // 左子树：左、 右子树：左
@@ -500,10 +503,11 @@ public class BinaryTree {
 
 
     /**
-     * 513
+     * 513. Find Bottom Left Tree Value
      */
     public int findBottomLeftValue(TreeNode root) {
         Queue<TreeNode> queue = new LinkedList<>();
+        // offer 在尾巴加一个元素
         queue.offer(root);
         int res = 0;
         while (!queue.isEmpty()) {
@@ -525,7 +529,11 @@ public class BinaryTree {
     }
 
     /**
-     * 112
+     * 112. Path Sum
+     * Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path such that adding up all the values along the path equals targetSum.
+     * <p>
+     * A leaf is a node with no children.
+     *
      * @param root
      * @param targetsum
      * @return
@@ -534,57 +542,65 @@ public class BinaryTree {
         if (root == null) {
             return false;
         }
-        targetsum -= root.val;
-        // 叶子结点
+        targetsum = targetsum - root.val;
+
         if (root.left == null && root.right == null) {
             return targetsum == 0;
         }
         if (root.left != null) {
             boolean left = haspathsum(root.left, targetsum);
-            if (left) {      // 已经找到
-                return true;
+            if (left) {
+                return true;// 已经找到
             }
         }
         if (root.right != null) {
             boolean right = haspathsum(root.right, targetsum);
-            if (right) {     // 已经找到
-                return true;
+            if (right) {
+                return true;// 已经找到
             }
         }
+
         return false;
     }
 
     /**
-     * 106
+     * 106. Construct Binary Tree from Inorder and Postorder Traversal
      */
-    Map<Integer, Integer> map;  // 方便根据数值查找位置
+    Map<Integer, Integer> mapFor106;  // 方便根据数值查找位置
+
     public TreeNode buildTree(int[] inorder, int[] postorder) {
-        map = new HashMap<>();
-        for (int i = 0; i < inorder.length; i++) { // 用map保存中序序列的数值对应位置
-            map.put(inorder[i], i);
+        mapFor106 = new HashMap<>();
+        // 用map保存中序序列的数值对应位置
+        for (int i = 0; i < inorder.length; i++) {
+            mapFor106.put(inorder[i], i);
         }
 
-        return findNode(inorder,  0, inorder.length, postorder,0, postorder.length);  // 前闭后开
+        TreeNode treeNode = findNode(inorder, 0, inorder.length, postorder, 0, postorder.length);  // 前闭后开
+
+        return treeNode;
     }
 
     private TreeNode findNode(int[] inorder, int inBegin, int inEnd, int[] postorder, int postBegin, int postEnd) {
         // 参数里的范围都是前闭后开
-        if (inBegin >= inEnd || postBegin >= postEnd) {  // 不满足左闭右开，说明没有元素，返回空树
+        if (inBegin >= inEnd || postBegin >= postEnd) { // 不满足左闭右开，说明没有元素，返回空数
             return null;
         }
-        int rootIndex = map.get(postorder[postEnd - 1]);  // 找到后序遍历的最后一个元素在中序遍历中的位置
-        TreeNode root = new TreeNode(inorder[rootIndex]);  // 构造结点
-        int lenOfLeft = rootIndex - inBegin;  // 保存中序左子树个数，用来确定后序数列的个数
-        root.left = findNode(inorder, inBegin, rootIndex,
-                postorder, postBegin, postBegin + lenOfLeft);
-        root.right = findNode(inorder, rootIndex + 1, inEnd,
-                postorder, postBegin + lenOfLeft, postEnd - 1);
+        // 找到后序遍历的最后一个元素在中序遍历中的位置
+        int rootIndex = mapFor106.get(postorder[postEnd - 1]);
+        // 构造结点
+        TreeNode root = new TreeNode(inorder[rootIndex]);
+        // 保存中序左子树个数，用来确定后序数列的个数
+        int lenOfLeft = rootIndex - inBegin;
+        root.left = findNode(inorder, inBegin, rootIndex, postorder, postBegin, postBegin + lenOfLeft);
+        root.right = findNode(inorder, rootIndex + 1, inEnd, postorder, postBegin + lenOfLeft, postEnd - 1);
+
 
         return root;
     }
 
     /**
-     * 654
+     * 654. Maximum Binary Tree
+     *
      * @param nums
      * @return
      */
@@ -602,7 +618,7 @@ public class BinaryTree {
         int maxIndex = leftIndex;// 最大值所在位置
         int maxVal = nums[maxIndex];// 最大值
         for (int i = leftIndex + 1; i < rightIndex; i++) {
-            if (nums[i] > maxVal){
+            if (nums[i] > maxVal) {
                 maxVal = nums[i];
                 maxIndex = i;
             }
@@ -616,6 +632,7 @@ public class BinaryTree {
 
     /**
      * 617.合并二叉树
+     *
      * @param root1
      * @param root2
      * @return
@@ -653,5 +670,209 @@ public class BinaryTree {
         }
         return root1;
     }
+
+    // 递归
+    public TreeNode mergeTrees2(TreeNode root1, TreeNode root2) {
+        if (root1 == null) return root2;
+        if (root2 == null) return root1;
+
+        root1.val += root2.val;
+        root1.left = mergeTrees2(root1.left, root2.left);
+        root1.right = mergeTrees2(root1.right, root2.right);
+        return root1;
+    }
+
+
+    /**
+     * 404. Sum of Left Leaves
+     * Given the root of a binary tree, return the sum of all left leaves.
+     * <p>
+     * A leaf is a node with no children. A left leaf is a leaf that is the left child of another node.
+     *
+     * @param root
+     * @return
+     */
+    public int sumOfLeftLeaves(TreeNode root) {
+
+        if (root == null) {
+            return 0;
+        }
+        int leftValue = sumOfLeftLeaves(root.left);
+        int rightValue = sumOfLeftLeaves(root.right);
+        int midValue = 0;
+        if (root.left != null && root.left.left == null && root.left.right == null) {
+            midValue = root.left.val;
+        }
+        int sum = midValue + leftValue + rightValue;
+
+
+        return sum;
+    }
+
+    /**
+     * 700. Search in a Binary Search Tree
+     * You are given the root of a binary search tree (BST) and an integer val.
+     * <p>
+     * Find the node in the BST that the node's value equals val and return the subtree rooted with that node. If such a node does not exist, return null.
+     *
+     * @param root
+     * @param val
+     * @return
+     */
+    public TreeNode searchBST(TreeNode root, int val) {
+
+        if (root == null || root.val == val) {
+            return root;
+        }
+
+        if (val < root.val) {
+            return searchBST(root.left, val);
+        } else {
+            return searchBST(root.right, val);
+        }
+
+
+    }
+
+    /**
+     * 98. Validate Binary Search Tree
+     *
+     * @param root
+     * @return
+     */
+    // 递归
+    // 简单粗暴：中序遍历完了 看看是不是单调递增
+    TreeNode max;
+
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        // 左
+        boolean left = isValidBST(root.left);
+        if (!left) {
+            return false;
+        }
+        // 中
+        if (max != null && root.val <= max.val) {
+            return false;
+        }
+        max = root;
+        // 右
+        boolean right = isValidBST(root.right);
+
+        return right;
+    }
+
+    /**
+     * 530. Minimum Absolute Difference in BST
+     * Given the root of a Binary Search Tree (BST), return the minimum absolute difference between the values of any two different nodes in the tree.
+     *
+     * @param root
+     * @return
+     */
+    TreeNode pre;// 记录上一个遍历的节点
+    int result = Integer.MAX_VALUE;
+
+    public int getMinimumDifference(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        // 左
+        getMinimumDifference(root.left);
+        // 中
+        if (pre != null) {
+            result = Math.min(result, root.val - pre.val);
+        }
+        pre = root;
+        // 右
+        getMinimumDifference(root.right);
+        return result;
+    }
+
+    /**
+     * 501. Find Mode in Binary Search Tree
+     *
+     * @param root
+     * @return
+     */
+
+    ArrayList<Integer> resListFor501;
+    int maxCountFor501;
+    int countFor501;
+    TreeNode preFor501;
+
+    public int[] findMode(TreeNode root) {
+
+        resListFor501 = new ArrayList<>();
+        maxCountFor501 = 0;
+        countFor501 = 0;
+        preFor501 = null;
+        findModeFor501(root);
+
+        int[] res = new int[resListFor501.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = resListFor501.get(i);
+        }
+
+        return res;
+    }
+
+    private void findModeFor501(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        // 左
+        findModeFor501(root.left);
+        // 中
+        int rootValue = root.val;
+        // 技术
+        if (preFor501 == null || rootValue != preFor501.val) {
+            countFor501 = 1;
+        } else {
+            countFor501++;
+        }
+        // 更新结果及maxCount
+        if (countFor501 > maxCountFor501) {
+            resListFor501.clear();
+            resListFor501.add(rootValue);
+            maxCountFor501 = countFor501;
+        } else if (countFor501 == maxCountFor501) {
+            resListFor501.add(rootValue);
+        }
+        preFor501 = root;
+        //右
+        findModeFor501(root.right);
+    }
+
+
+    /**
+     * 236. Lowest Common Ancestor of a Binary Tree
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) { // 递归结束条件
+            return root;
+        }
+
+        // 后序遍历
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+
+        if (left == null && right == null) { // 若未找到节点 p 或 q
+            return null;
+        } else if (left == null && right != null) { // 若找到一个节点
+            return right;
+        } else if (left != null && right == null) { // 若找到一个节点
+            return left;
+        } else { // 若找到两个节点
+            return root;
+        }
+    }
+
 
 }
