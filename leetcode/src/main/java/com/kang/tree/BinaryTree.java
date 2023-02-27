@@ -874,5 +874,162 @@ public class BinaryTree {
         }
     }
 
+    /**
+     * 235. Lowest Common Ancestor of a Binary Search Tree
+     *
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
+        if (root.val > p.val && root.val > q.val) {
+            return lowestCommonAncestor2(root.left, p, q);
+        }
+        if (root.val < p.val && root.val < q.val) {
+            return lowestCommonAncestor2(root.right, p, q);
+        }
+        return root;
+    }
+
+    /**
+     * 701. Insert into a Binary Search Tree
+     *
+     * @param root
+     * @param val
+     * @return
+     */
+    public TreeNode insertIntoBST(TreeNode root, int val) {
+        // 如果当前节点为空，也就意味着val找到了合适的位置，此时创建节点直接返回。
+        if (root == null) {
+            return new TreeNode(val);
+        }
+        // 递归创建左子树
+        if (val < root.val) {
+            root.left = insertIntoBST(root.left, val);
+        }
+        // 递归创建右子树
+        if (val > root.val) {
+            root.right = insertIntoBST(root.right, val);
+        }
+        return root;
+    }
+
+
+    /**
+     * 450. Delete Node in a BST
+     *
+     * @param root
+     * @param key
+     * @return
+     */
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if (root == null) {
+            return null;
+        }
+        if (key == root.val) {
+            // 叶子结点，左右子树都为空
+            if (root.left == null && root.right == null) {
+                return null;
+            } else if (root.left != null && root.right == null) { // 左不为空，右为空
+                return root.left;
+            } else if (root.left == null && root.right != null) { // 左为空，右不为空
+                return root.right;
+            } else { // 左不空，右不空， 该节点左子树移动到其右子树最左侧的结点的左边
+                TreeNode current = root.right;
+                while (current.left != null) {
+                    current = current.left;
+                }
+                current.left = root.left;
+                root = root.right;
+                return root;
+            }
+
+        }
+        if (key < root.val) {
+            root.left = deleteNode(root.left, key);
+        }
+        if (key > root.val) {
+            root.right = deleteNode(root.right, key);
+        }
+        return root;
+    }
+
+    /**
+     * 669. Trim a Binary Search Tree
+     *
+     * @param root
+     * @param low
+     * @param high
+     * @return
+     */
+    public TreeNode trimBST(TreeNode root, int low, int high) {
+
+        if (root == null) {
+            return null;
+        }
+        if (root.val < low) {
+            return trimBST(root.right, low, high);
+        }
+        if (root.val > high) {
+            return trimBST(root.left, low, high);
+        }
+
+        root.left = trimBST(root.left, low, high);
+        root.right = trimBST(root.right, low, high);
+        return root;
+
+    }
+
+
+    /**
+     * 108. Convert Sorted Array to Binary Search Tree
+     *
+     * @param nums
+     * @return
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        // 数组内左闭右开
+        return sortedArrayToBST(nums, 0, nums.length);
+    }
+
+    private TreeNode sortedArrayToBST(int[] nums, int left, int right) {
+
+        if (left >= right) {
+            return null;
+        }
+        if (right - left == 1) {
+            return new TreeNode(nums[left]);
+        }
+        int mid = left + (right - left) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = sortedArrayToBST(nums, left, mid);
+        root.right = sortedArrayToBST(nums, mid + 1, right);
+        return root;
+    }
+
+
+    /**
+     * 538. Convert BST to Greater Tree
+     * @param root
+     * @return
+     */
+    int sumFor538;
+    public TreeNode convertBST(TreeNode root) {
+        sumFor538 = 0;
+        convertBST1(root);
+        return root;
+    }
+
+    // 按右中左顺序遍历，累加即可
+    public void convertBST1(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        convertBST1(root.right);
+        sumFor538 += root.val;
+        root.val = sumFor538;
+        convertBST1(root.left);
+    }
 
 }
