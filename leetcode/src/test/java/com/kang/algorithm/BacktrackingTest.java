@@ -15,4 +15,11 @@ public class BacktrackingTest {
         backtracking.restoreIpAddresses(s);
 
     }
+
+    @Test
+    public void findSubsequences() {
+
+        int[] n = {4,6,7,7};
+        backtracking.findSubsequences(n);
+    }
 }

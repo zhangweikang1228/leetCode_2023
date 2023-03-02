@@ -343,12 +343,155 @@ public class Backtracking {
         // 遍历这个树的时候，把所有节点都记录下来，就是要求的子集集合
         result.add(new ArrayList<>(path));
         // 终止条件可 不加
-        if (startIndex >= nums.length){
+        if (startIndex >= nums.length) {
             return;
         }
-        for (int i = startIndex; i < nums.length; i++){
+        for (int i = startIndex; i < nums.length; i++) {
             path.add(nums[i]);
             backTrackingSubsets(nums, i + 1);
+            path.removeLast();
+        }
+
+    }
+
+
+    /**
+     * 90. Subsets II
+     *
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+
+        if (nums.length == 0) {
+            result.add(path);
+            return result;
+        }
+        Arrays.sort(nums);
+        used = new boolean[nums.length];
+        subsetsWithDupHelper(nums, 0);
+        return result;
+    }
+
+    private void subsetsWithDupHelper(int[] nums, int startIndex) {
+        result.add(new ArrayList<>(path));
+        if (startIndex >= nums.length) {
+            return;
+        }
+        for (int i = startIndex; i < nums.length; i++) {
+            // 树层去重2
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) {
+                continue;
+            }
+            path.add(nums[i]);
+            used[i] = true;
+            subsetsWithDupHelper(nums, i + 1);
+            path.removeLast();
+            used[i] = false;
+
+
+        }
+
+    }
+
+    /**
+     * 491. Non-decreasing Subsequences
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> findSubsequences(int[] nums) {
+        findSubquencesHelper(nums,0);
+        return result;
+    }
+
+    private void findSubquencesHelper(int[] nums, int startIndex){
+        if (startIndex > nums.length){
+            return;
+        }
+        if (path.size() > 1){
+            result.add(new ArrayList<>(path));
+        }
+        Set<Integer> set = new HashSet<>();
+        for (int i = startIndex; i < nums.length; i++) {
+            if((path.size() > 0 && nums[i] < path.getLast()) || set.contains(nums[i])){
+                continue;
+            }
+            set.add(nums[i]);
+            path.add(nums[i]);
+            findSubquencesHelper(nums,i+1);
+            path.removeLast();
+
+
+        }
+
+    }
+
+
+    /**
+     * 46. Permutations
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        used = new boolean[nums.length];
+        Arrays.fill(used, false);
+
+        permuteHelper(nums,used);
+
+        return result;
+    }
+
+    private void permuteHelper(int[] nums, boolean[] used){
+        if (path.size() == nums.length){
+            result.add(new ArrayList<>(path));
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i] == true){
+                continue;
+            }
+
+            used[i] = true;
+            path.add(nums[i]);
+            permuteHelper(nums,used);
+            used[i] = false;
+            path.removeLast();
+        }
+
+    }
+
+
+    /**
+     * 47. Permutations II
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        used = new boolean[nums.length];
+        Arrays.fill(used, false);
+        Arrays.sort(nums);
+
+        permuteHelper2(nums,used);
+
+        return result;
+    }
+
+    private void permuteHelper2(int[] nums, boolean[] used){
+        if (path.size() == nums.length){
+            result.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i-1]  && !used[i-1]){
+                continue;
+            }
+            if (used[i]){
+                continue;
+            }
+
+            used[i] = true;
+            path.add(nums[i]);
+            permuteHelper2(nums,used);
+            used[i] = false;
             path.removeLast();
         }
 
