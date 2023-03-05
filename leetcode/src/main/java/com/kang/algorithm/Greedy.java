@@ -1,6 +1,7 @@
 package com.kang.algorithm;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.stream.IntStream;
 
 public class Greedy {
@@ -206,6 +207,130 @@ public class Greedy {
 
         if (k % 2 == 1) nums[len - 1] = -nums[len - 1];
         return Arrays.stream(nums).sum();
+    }
+
+
+    /**
+     * 134. Gas Station
+     * @param gas
+     * @param cost
+     * @return
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+
+        int currentSum = 0;
+        int totalSum =0;
+        int start = 0;
+        for (int i = 0; i < gas.length; i++) {
+            currentSum = currentSum + gas[i] - cost[i];
+            totalSum = totalSum + gas[i] - cost[i];
+            if (currentSum < 0){ // 当前累加rest[i]和 curSum一旦小于0
+                start = i +1; // 起始位置更新为i+1
+                currentSum = 0; // curSum从0开始
+            }
+
+        }
+        if (totalSum < 0){ // 说明怎么走都不可能跑一圈了
+            return -1;
+        }
+        return start;
+
+    }
+
+    /**
+     * 135. Candy
+     * @param ratings
+     * @return
+     */
+    public int candy(int[] ratings) {
+        /**
+         分两个阶段
+         1、起点下标1 从左往右，只要 右边 比 左边 大，右边的糖果=左边 + 1
+         2、起点下标 ratings.length - 2 从右往左， 只要左边 比 右边 大，此时 左边的糖果应该 取本身的糖果数（符合比它左边大） 和 右边糖果数 + 1 二者的最大值，这样才符合 它比它左边的大，也比它右边大
+         */
+        int len = ratings.length;
+        int[] candyVec = new int[len];
+        candyVec[0] = 1;
+        for (int i = 1; i < len; i++) {
+            candyVec[i] = (ratings[i] > ratings[i - 1]) ? candyVec[i - 1] + 1 : 1;
+        }
+
+        for (int i = len - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i + 1]) {
+                candyVec[i] = Math.max(candyVec[i], candyVec[i + 1] + 1);
+            }
+        }
+
+        int ans = 0;
+        for (int num : candyVec) {
+            ans += num;
+        }
+        return ans;
+
+    }
+
+    /**
+     * 860. Lemonade Change
+     * @param bills
+     * @return
+     */
+    public boolean lemonadeChange(int[] bills) {
+        /**
+         * 情况一：账单是5，直接收下。
+         * 情况二：账单是10，消耗一个5，增加一个10
+         * 情况三：账单是20，优先消耗一个10和一个5，如果不够，再消耗三个5
+         */
+        int five = 0;
+        int ten = 0;
+
+        for (int i = 0; i < bills.length; i++) {
+            if (bills[i] == 5) {
+                five++;
+            } else if (bills[i] == 10) {
+                five--;
+                ten++;
+            } else if (bills[i] == 20) {
+                if (ten > 0) {
+                    ten--;
+                    five--;
+                } else {
+                    five -= 3;
+                }
+            }
+            if (five < 0 || ten < 0) return false;
+        }
+
+        return true;
+
+    }
+
+
+    /**
+     * 406. Queue Reconstruction by Height
+     * @param people
+     * @return
+     */
+    public int[][] reconstructQueue(int[][] people) {
+        // people[i] = [hi, ki] represents the ith person of height hi with exactly ki other people in front who have a height greater than or equal to hi.
+        /**
+         * 按照身高排序之后，优先按身高高的people的k来插入，后序插入节点也不会影响前面已经插入的节点，最终按照k的规则完成了队列。
+         * 所以在按照身高从大到小排序后：
+         * 局部最优：优先按身高高的people的k来插入。插入操作过后的people满足队列属性
+         * 全局最优：最后都做完插入操作，整个队列满足题目队列属性
+         */
+        // 身高从大到小排（身高相同k小的站前面）
+        Arrays.sort(people, (a, b) -> {
+            if (a[0] == b[0]) return a[1] - b[1];
+            return b[0] - a[0];
+        });
+
+        LinkedList<int[]> que = new LinkedList<>();
+
+        for (int[] p : people) {
+            que.add(p[1],p);
+        }
+
+        return que.toArray(new int[people.length][]);
     }
 
 }
