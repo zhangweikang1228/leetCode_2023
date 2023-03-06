@@ -1,7 +1,10 @@
 package com.kang.algorithm;
 
+import com.kang.Main;
+
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class Greedy {
@@ -160,21 +163,21 @@ public class Greedy {
             return 0;
         }
         //记录跳跃的次数
-        int count=0;
+        int count = 0;
         //当前的覆盖最大区域
         int curDistance = 0;
         //最大的覆盖区域
         int maxDistance = 0;
         for (int i = 0; i < nums.length; i++) {
             //在可覆盖区域内更新最大的覆盖区域
-            maxDistance = Math.max(maxDistance,i+nums[i]);
+            maxDistance = Math.max(maxDistance, i + nums[i]);
             //说明当前一步，再跳一步就到达了末尾
-            if (maxDistance>=nums.length-1){
+            if (maxDistance >= nums.length - 1) {
                 count++;
                 break;
             }
             //走到当前覆盖的最大区域时，更新下一步可达的最大区域
-            if (i==curDistance){
+            if (i == curDistance) {
                 curDistance = maxDistance;
                 count++;
             }
@@ -185,6 +188,7 @@ public class Greedy {
 
     /**
      * 1005. Maximize Sum Of Array After K Negations
+     *
      * @param nums
      * @param k
      * @return
@@ -212,6 +216,7 @@ public class Greedy {
 
     /**
      * 134. Gas Station
+     *
      * @param gas
      * @param cost
      * @return
@@ -219,18 +224,18 @@ public class Greedy {
     public int canCompleteCircuit(int[] gas, int[] cost) {
 
         int currentSum = 0;
-        int totalSum =0;
+        int totalSum = 0;
         int start = 0;
         for (int i = 0; i < gas.length; i++) {
             currentSum = currentSum + gas[i] - cost[i];
             totalSum = totalSum + gas[i] - cost[i];
-            if (currentSum < 0){ // 当前累加rest[i]和 curSum一旦小于0
-                start = i +1; // 起始位置更新为i+1
+            if (currentSum < 0) { // 当前累加rest[i]和 curSum一旦小于0
+                start = i + 1; // 起始位置更新为i+1
                 currentSum = 0; // curSum从0开始
             }
 
         }
-        if (totalSum < 0){ // 说明怎么走都不可能跑一圈了
+        if (totalSum < 0) { // 说明怎么走都不可能跑一圈了
             return -1;
         }
         return start;
@@ -239,6 +244,7 @@ public class Greedy {
 
     /**
      * 135. Candy
+     *
      * @param ratings
      * @return
      */
@@ -271,6 +277,7 @@ public class Greedy {
 
     /**
      * 860. Lemonade Change
+     *
      * @param bills
      * @return
      */
@@ -307,6 +314,7 @@ public class Greedy {
 
     /**
      * 406. Queue Reconstruction by Height
+     *
      * @param people
      * @return
      */
@@ -327,10 +335,144 @@ public class Greedy {
         LinkedList<int[]> que = new LinkedList<>();
 
         for (int[] p : people) {
-            que.add(p[1],p);
+            que.add(p[1], p);
         }
 
         return que.toArray(new int[people.length][]);
+    }
+
+    /**
+     * 452. Minimum Number of Arrows to Burst Balloons
+     *
+     * @param points
+     * @return
+     */
+    public int findMinArrowShots(int[][] points) {
+        if (points.length == 0) {
+            return 0;
+        }
+
+        // 按照左边界进行排序
+        // 使用Integer内置比较方法，不会溢出
+        Arrays.sort(points, (a, b) -> Integer.compare(a[0], b[0]));
+        int result = 1;
+        for (int i = 1; i < points.length; i++) {
+            if (points[i][0] > points[i - 1][1]) {
+                result++;
+            } else {
+                points[i][1] = Math.min(points[i - 1][1], points[i][1]);
+
+            }
+
+        }
+        return result;
+
+    }
+
+    /**
+     * 435. Non-overlapping Intervals
+     *
+     * @param intervals
+     * @return
+     */
+    public int eraseOverlapIntervals(int[][] intervals) {
+
+        if (intervals.length == 0) {
+            return 0;
+        }
+
+        // 按照左边界进行排序
+        // 使用Integer内置比较方法，不会溢出
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+        int result = 0;
+
+        for (int i = 1; i < intervals.length; i++) {
+            if (intervals[i][0] < intervals[i - 1][1]) {
+                result++;
+                intervals[i][1] = Math.min(intervals[i][1], intervals[i - 1][1]);
+            }
+
+        }
+        return result;
+    }
+
+    /**
+     * 763. Partition Labels
+     *
+     * @param s
+     * @return
+     */
+    public List<Integer> partitionLabels(String s) {
+        List<Integer> list = new LinkedList<>();
+        int[] edge = new int[26];
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            edge[chars[i] - 'a'] = i;
+        }
+        int idx = 0;
+        int last = 0;
+        for (int i = 0; i < chars.length; i++) {
+            idx = Math.max(idx, edge[chars[i] - 'a']);
+            if (i == idx) {
+                list.add(i - last + 1);
+                last = i;
+            }
+        }
+        return list;
+
+    }
+
+    /**
+     * 56. Merge Intervals
+     *
+     * @param intervals
+     * @return
+     */
+    public int[][] merge(int[][] intervals) {
+        if (intervals.length <= 1) {
+            return intervals;
+        }
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+        LinkedList<int[]> list = new LinkedList();
+        list.add(intervals[0]);
+        for (int i = 1; i < intervals.length; i++) {
+            int[] temp = list.getLast();
+            if (intervals[i][0] <= temp[1]) { // 重叠 -> 合并区间
+                temp[1] = Math.max(intervals[i][1], temp[1]);
+                list.removeLast();
+                list.add(temp);
+            } else {
+                list.add(intervals[i]);
+            }
+
+        }
+
+        return list.toArray(new int[list.size()][]);
+    }
+
+    /**
+     * 738. Monotone Increasing Digits
+     *
+     * @param n
+     * @return
+     */
+    public int monotoneIncreasingDigits(int n) {
+
+        String s = String.valueOf(n);
+        char[] chars = s.toCharArray();
+        int start = s.length();
+        for (int i = s.length() - 2; i >= 0; i--) {
+            if (chars[i] > chars[i + 1]) {
+                chars[i]--;
+                start = i + 1;
+            }
+        }
+        for (int i = start; i < s.length(); i++) {
+            chars[i] = '9';
+        }
+        return Integer.parseInt(String.valueOf(chars));
+
+
     }
 
 }
