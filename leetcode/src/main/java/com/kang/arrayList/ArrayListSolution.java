@@ -42,18 +42,17 @@ public class ArrayListSolution {
      * 704. Binary Search
      * Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums.
      * If target exists, then return its index. Otherwise, return -1.
-     *
+     * <p>
      * Example 1:
-     *
+     * <p>
      * Input: nums = [-1,0,3,5,9,12], target = 9
      * Output: 4
      * Explanation: 9 exists in nums and its index is 4
      * Example 2:
-     *
+     * <p>
      * Input: nums = [-1,0,3,5,9,12], target = 2
      * Output: -1
      * Explanation: 2 does not exist in nums so return -1
-     *
      *
      * @param nums
      * @param target
@@ -89,16 +88,16 @@ public class ArrayListSolution {
      * More formally, if there are k elements after removing the duplicates, then the first k elements of nums should hold the final result.
      * It does not matter what you leave beyond the first k elements.
      * Return k after placing the final result in the first k slots of nums.
-     *----------------------------------------------------------------------------------------------------------------------------
+     * ----------------------------------------------------------------------------------------------------------------------------
      * Example 1:
-     *
+     * <p>
      * Input: nums = [3,2,2,3], val = 3
      * Output: 2, nums = [2,2,_,_]
      * Explanation: Your function should return k = 2, with the first two elements of nums being 2.
      * It does not matter what you leave beyond the returned k (hence they are underscores).
      * ----------------------------------------------------------------------------------------------------------------------------
      * Example 2:
-     *
+     * <p>
      * Input: nums = [0,1,2,2,3,0,4,2], val = 2
      * Output: 5, nums = [0,1,4,0,3,_,_,_]
      * Explanation: Your function should return k = 5, with the first five elements of nums containing 0, 0, 1, 3, and 4.
@@ -120,6 +119,7 @@ public class ArrayListSolution {
 
     /**
      * 双指针：  快指针-指向新数所需要的第一个元素   慢指针-需要更新数组的位置
+     *
      * @param nums
      * @param val
      * @return
@@ -128,15 +128,15 @@ public class ArrayListSolution {
         // 双向指针
         int left = 0;
         int right = nums.length - 1;
-        while(right >= 0 && nums[right] == val) right--; //将right移到从右数第一个值不为val的位置
-        while(left <= right) {
-            if(nums[left] == val) { //left位置的元素需要移除
+        while (right >= 0 && nums[right] == val) right--; //将right移到从右数第一个值不为val的位置
+        while (left <= right) {
+            if (nums[left] == val) { //left位置的元素需要移除
                 //将right位置的元素移到left（覆盖），right位置移除
                 nums[left] = nums[right];
                 right--;
             }
             left++;
-            while(right >= 0 && nums[right] == val) right--;
+            while (right >= 0 && nums[right] == val) right--;
         }
         return left;
     }
@@ -145,13 +145,13 @@ public class ArrayListSolution {
      * 977. Squares of a Sorted Array
      * Given an integer array nums sorted in non-decreasing order,
      * return an array of the squares of each number sorted in non-decreasing order.
-     *
+     * <p>
      * Example 1:
      * Input: nums = [-4,-1,0,3,10]
      * Output: [0,1,9,16,100]
      * Explanation: After squaring, the array becomes [16,1,0,9,100].
      * After sorting, it becomes [0,1,9,16,100].
-     *
+     * <p>
      * Example 2:
      * Input: nums = [-7,-3,2,3,11]
      * Output: [4,9,9,49,121]
@@ -187,21 +187,44 @@ public class ArrayListSolution {
         return res;
     }
 
+    public static int[] sortedSquares2(int[] nums) {
+
+        int[] res = new int[nums.length];
+
+        int left = 0;
+        int right = nums.length - 1;
+        int j = nums.length - 1;
+        while (left <= right) {
+
+            if (nums[left] * nums[left] > nums[right] * nums[right]) {
+                res[j] = nums[left] * nums[left];
+                left++;
+
+            } else {
+                res[j] = nums[right] * nums[right];
+                right--;
+            }
+            j--;
+        }
+
+        return res;
+    }
+
     /**
      * 209. Minimum Size Subarray Sum
      * Given an array of positive integers nums and a positive integer target, return the minimal length of a
      * subarray whose sum is greater than or equal to target. If there is no such subarray, return 0 instead.
-     *
-     *
+     * <p>
+     * <p>
      * Example 1:
      * Input: target = 7, nums = [2,3,1,2,4,3]
      * Output: 2
      * Explanation: The subarray [4,3] has the minimal length under the problem constraint.
-     *
+     * <p>
      * Example 2:
      * Input: target = 4, nums = [1,4,4]
      * Output: 1
-     *
+     * <p>
      * Example 3:
      * Input: target = 11, nums = [1,1,1,1,1,1,1,1]
      * Output: 0
@@ -210,6 +233,27 @@ public class ArrayListSolution {
      * @param nums
      * @return
      */
+    public int minSubArrayLen2(int target, int[] nums) {
+
+        int res = Integer.MAX_VALUE;
+        int left = 0;
+        int right = 0;
+        int sum = 0;
+        for (; right < nums.length; right++) {
+            sum = sum + nums[right];
+            while (sum >= target) {
+                res = Math.min(res, right - left + 1);
+                sum = sum - nums[left];
+                left++;
+            }
+
+        }
+
+        // 如果result没有被赋值的话，就返回0，说明没有符合条件的子序列
+        return res == Integer.MAX_VALUE ? 0 : res;
+    }
+
+
     public int minSubArrayLen(int target, int[] nums) {
         // 滑动窗口
         int left = 0; // 滑动窗口起始位置
@@ -234,15 +278,16 @@ public class ArrayListSolution {
      * 59. Spiral Matrix II
      * Given a positive integer n, generate an n x n matrix filled with elements from 1 to n2 in spiral order.
      * Example 1:
-     *    ｜1｜2｜3｜
-     *    ｜8｜9｜4｜
-     *    ｜7｜6｜5｜
+     * ｜1｜2｜3｜
+     * ｜8｜9｜4｜
+     * ｜7｜6｜5｜
      * Input: n = 3
      * Output: [[1,2,3],[8,9,4],[7,6,5]]
      * Example 2:
-     *
+     * <p>
      * Input: n = 1
      * Output: [[1]]
+     *
      * @param n
      * @return
      */

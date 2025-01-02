@@ -19,6 +19,9 @@ public class TestLinkListSolution {
         listNode2_0.next = listNode2_1;
 
         LinkListSolution.addTwoNumbers(listNode1_0,listNode2_0);
+        LinkListSolution.addTwoNumbers(listNode1_1,listNode2_1);
+
+
 
 
 

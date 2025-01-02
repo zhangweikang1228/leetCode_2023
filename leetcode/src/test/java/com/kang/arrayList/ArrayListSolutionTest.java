@@ -43,4 +43,14 @@ public class ArrayListSolutionTest {
             System.out.print(result[i]);
         }
     }
+
+    @Test
+    public void sortedSquares2(){
+        int[] nums = {-4, -1, 0, 3, 10};
+        int[] result = ArrayListSolution.sortedSquares2(nums);
+        for (int i = 0; i < result.length; i++) {
+
+            System.out.print(result[i]);
+        }
+    }
 }
